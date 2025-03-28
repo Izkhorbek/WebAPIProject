@@ -21,11 +21,11 @@ namespace WebAPIProject.Controllers
 
 
         //GET: api/Products
-        [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetProducts()
-        {
-            return Ok(_products);
-        }
+        //[HttpGet]
+        //public ActionResult<IEnumerable<Product>> GetProducts()
+        //{
+        //    return Ok(_products);
+        //}
 
         //GET: api/Products/{id}
         [HttpGet("{id}")]
@@ -34,33 +34,33 @@ namespace WebAPIProject.Controllers
             var product = _products.FirstOrDefault(p => p.Id == id);
             if (product == null)
             {
-                return NotFound(new {Message = $"Product with ID {id} not found"});
+                return NotFound(new { Message = $"Product with ID {id} not found" });
             }
 
             return Ok(product);
         }
 
-        //POST: api/Products
-        [HttpPost]
-        public ActionResult<Product> PostProduct([FromBody] Product product)
-        {
-            if (product == null)
-            {
-                return BadRequest(new {Message = "Product data is missing"});
-            }
+        ////POST: api/Products
+        //[HttpPost]
+        //public ActionResult<Product> PostProduct([FromBody] Product product)
+        //{
+        //    if (product == null)
+        //    {
+        //        return BadRequest(new { Message = "Product data is missing" });
+        //    }
 
-            //Basic ID assignment logic (for demonstration purposes)
-            product.Id = _products.Max(p => p.Id) + 1;
-            _products.Add(product);
+        //    //Basic ID assignment logic (for demonstration purposes)
+        //    product.Id = _products.Max(p => p.Id) + 1;
+        //    _products.Add(product);
 
-            return CreatedAtAction(nameof(GetProduct), new {id = product.Id}, product);
-        }
+        //    return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        //}
 
-        // PUT: api/Products/{id}
+        //// PUT: api/Products/{id}
         [HttpPut("{id}")]
         public IActionResult PutProduct(int id, [FromBody] Product updatedProduct)
         {
-            if(id !=updatedProduct.Id)
+            if (id != updatedProduct.Id)
             {
                 return BadRequest(new { Message = "Product ID mismatch" });
             }

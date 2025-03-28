@@ -144,11 +144,11 @@ namespace WebAPIProject.Controllers
         {
             return $"Response from GetEmployeeDetails Method, EmployeeId : {EmployeeId}";
         }
-        [Route("{EmployeeName:alpha}")]
-        [HttpGet]
-        public string GetEmployeeDetails(string EmployeeName)
-        {
-            return $"Response from GetEmployeeDetails Method, EmployeeName : {EmployeeName}";
-        }
+        //[Route("{EmployeeName:alpha}")]
+        //[HttpGet]
+        //public string GetEmployeeDetails(string EmployeeName)
+        //{
+        //    return $"Response from GetEmployeeDetails Method, EmployeeName : {EmployeeName}";
+        //}
     }
 }

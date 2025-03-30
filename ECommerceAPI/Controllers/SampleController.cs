@@ -36,16 +36,34 @@ namespace ECommerceAPI.Controllers
         // The default model binder cannot easily handle merging data form multiple sources(Header, Query, Body) into a single model.
         [HttpGet("multi-source-binding")]
         public IActionResult MultiSourceBinding([FromHeader(Name ="X-Custom-Header")] string headerValue,
-            [FromQuery] string queryValue, [FromBody] ComplexBodyModel bodyModel)
+            [FromBody] ComplexBodyModel bodyModel)
         {
             // Merging data from header, query, and body
             var mergedResult = new MergedModel
             {
                 Header = headerValue,
-                Query = queryValue,
+                Query = "",
                 BodyData = bodyModel.Data
             };
             return Ok(mergedResult);
+        }
+
+        // No Support for Sepcial Data Types
+        // Limitation:
+        // Tuples cannot be easily bound by the default model binder without additional configutation or custom model binder.
+        [HttpPost("tuple-binding")]
+        public IActionResult TupleBinding([FromBody] CustomTupleModel tupleModel)
+        {
+            return Ok($"Tuple Data: Item1 = {tupleModel.Item1 }, Item2: {tupleModel.Item2}");
+        }
+
+        // Performance Issues for Large Data
+        // Limitation:
+        // For large data, Frombody reads the entire request bosy into memory, which can be inefficient and lead to performance issues.
+        [HttpPost("large-data-binding")]
+        public IActionResult LargeDataBinding([FromBody] LargeDataModel model)
+        {
+            return Ok($"Large Data Count: {model.LargeDataList.Count}");
         }
     }
 }

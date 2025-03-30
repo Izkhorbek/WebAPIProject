@@ -1,10 +1,19 @@
-﻿namespace ECommerceAPI.Models
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace ECommerceAPI.Models
 {
-    //This Model will use to demonstrate Limited to Built-in Sources
+    // This Model will use to demonstrate Limited to Built-in Sources
+    // The [ModelBinder] attribute is used to specify the custom model binder for this class.
+    // The BinderType parameter is set to typeof(CustomObjectModelBinder), indicating that the CustomObjectModelBinder
+    // should be used to bind incoming request data to instances of the CustomObject class.
+    [ModelBinder(BinderType = typeof(CustomObjectBinder))]
     public class CustomObject
     {
+        // This property will store the 'Name' part extracted by the custom model binder
         public string Name { get; set; }
+        // This property will store the 'Age' part extracted and parsed by the custom model binder
         public int Age { get; set; }
+        // This property will store the 'Location' part extracted by the custom model binder
         public string Location { get; set; }
     }
 

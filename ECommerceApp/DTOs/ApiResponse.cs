@@ -1,4 +1,6 @@
-﻿namespace ECommerceApp.DTOs
+﻿using System.Net;
+
+namespace ECommerceApp.DTOs
 {
     public class ApiResponse<T>
     {
@@ -27,6 +29,13 @@
             Data = data;
             Errors = new List<string>();
         }
+        public ApiResponse(HttpStatusCode statusCode, T data)
+        {
+            StatusCode = (int)statusCode;
+            Success = true;
+            Data = data;
+            Errors = new List<string>();
+        }
 
         public ApiResponse(int statusCode, List<string> errors)
         {
@@ -38,6 +47,13 @@
         public ApiResponse(int statusCode, string error)
         {
             StatusCode = statusCode;
+            Success = false;
+            Errors = new List<string> { error };
+        }
+
+        public ApiResponse(HttpStatusCode statusCode, string error)
+        {
+            StatusCode = (int)statusCode;
             Success = false;
             Errors = new List<string> { error };
         }

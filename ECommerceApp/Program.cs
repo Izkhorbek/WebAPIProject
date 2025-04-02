@@ -1,5 +1,6 @@
 
 using ECommerceApp.Data;
+using ECommerceApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApp
@@ -32,6 +33,9 @@ namespace ECommerceApp
               
                 options.UseMySQL(connectionString);
             });
+
+            //Registering the services
+            builder.Services.AddScoped<CustomerService>();
 
             var app = builder.Build();
 

@@ -57,7 +57,7 @@ namespace ECommerceApp.Data
                 .WithMany(p => p.Feedbacks)
                 .HasForeignKey(f => f.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
-
+            
             // Initial Seed Data
             // Seed OrderStatusEntity with initial data
             modelBuilder.Entity<Status>().HasData(

@@ -1,6 +1,7 @@
 
 using ECommerceApp.Data;
 using ECommerceApp.Services;
+using ECommerceApp.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApp
@@ -36,6 +37,12 @@ namespace ECommerceApp
 
             //Registering the services
             builder.Services.AddScoped<CustomerService>();
+
+            //Registering the AddressService
+            builder.Services.AddScoped<IAddressService, AddressService>();
+
+            // Registering the CategoryService
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
             var app = builder.Build();
 

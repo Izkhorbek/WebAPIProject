@@ -9,7 +9,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace ECommerceApp.Migrations
 {
     /// <inheritdoc />
-    public partial class initialize : Migration
+    public partial class Initialize : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

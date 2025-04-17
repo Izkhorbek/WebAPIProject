@@ -33,7 +33,7 @@ namespace ECommerceApp
                 }
               
                 options.UseMySQL(connectionString);
-            });
+            },ServiceLifetime.Scoped);
 
             //Registering the services
             builder.Services.AddScoped<CustomerService>();
@@ -53,6 +53,9 @@ namespace ECommerceApp
             //Register the OrderServie
             builder.Services.AddScoped<IOrderService, OrderService>();
 
+            //Register PaymentService
+            builder.Services.AddScoped<PaymentService>();
+
             //Register EmailService
             builder.Services.AddScoped<EmailService>();
 
@@ -68,7 +71,6 @@ namespace ECommerceApp
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

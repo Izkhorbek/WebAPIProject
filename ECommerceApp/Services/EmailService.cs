@@ -16,7 +16,7 @@ namespace ECommerceApp.Services
             _configuration = configuration;
         }
 
-        public  Task SendEmailAsync(string ToEmail, string Subject, string Body, bool IsBodyHtml = false)
+        public async Task SendEmailAsync(string ToEmail, string Subject, string Body, bool IsBodyHtml = false)
         {
             // Retrieve the mail server (SMTP host) from the configuration
             string? MailServer = _configuration["EmailSettings:MailServer"];
@@ -58,7 +58,7 @@ namespace ECommerceApp.Services
             // Add the recipient's email address to the message.
             mailMessage.To.Add(ToEmail);
             // Send the email asynchronously using the SmtpClient instance.
-            return  client.SendMailAsync(mailMessage);
+             await client.SendMailAsync(mailMessage);
         }
     }
 }

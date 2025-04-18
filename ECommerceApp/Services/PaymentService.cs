@@ -2,7 +2,6 @@
 using ECommerceApp.DTOs;
 using ECommerceApp.DTOs.PaymentDTOs;
 using ECommerceApp.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApp.Services
@@ -11,7 +10,7 @@ namespace ECommerceApp.Services
     {
         private readonly ECommerceAppDbContext _context;
         private readonly EmailService _emailService;
-        
+
         public PaymentService(ECommerceAppDbContext context, EmailService emailService)
         {
             _context = context;
@@ -21,7 +20,7 @@ namespace ECommerceApp.Services
         public async Task<ApiResponse<PaymentResponseDTO>> ProcessPaymentAsync(PaymentRequestDTO paymentRequest)
         {
             //Use a transaction to guarantee atomic operations on Order and Payment
-            using(var transaction = await _context.Database.BeginTransactionAsync())
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
@@ -31,12 +30,12 @@ namespace ECommerceApp.Services
                         .FirstOrDefaultAsync(p => p.Id == paymentRequest.OrderId &&
                         p.CustomerId == paymentRequest.CustomerId);
 
-                    if(order == null)
+                    if (order == null)
                     {
                         return new ApiResponse<PaymentResponseDTO>(404, "Order not found");
                     }
 
-                    if(Math.Round(paymentRequest.Amount, 2) != Math.Round(order.TotalAmount, 2))
+                    if (Math.Round(paymentRequest.Amount, 2) != Math.Round(order.TotalAmount, 2))
                     {
                         return new ApiResponse<PaymentResponseDTO>(400, "Payment amount does not math the order total.");
                     }
@@ -44,10 +43,10 @@ namespace ECommerceApp.Services
                     Payment payment;
 
                     //Check if an existing payment record is present
-                    if(order.Payment !=null)
+                    if (order.Payment != null)
                     {
-                        // Allow retry only if previous payment failed and order status is still pending
-                        if(order.Payment.Status == PaymentStatus.Failed && order.OrderStatus == OrderStatus.Pending)
+                        //Allow retry only if previous payment failed and order status is still pending
+                        if (order.Payment.Status == PaymentStatus.Failed && order.OrderStatus == OrderStatus.Pending)
                         {
                             //Retry: update the existing payment record with new details
                             payment = order.Payment;
@@ -82,12 +81,12 @@ namespace ECommerceApp.Services
                     }
 
                     //For non-COD payments, simulate payment processing
-                    if(!IsCashOnDelivery(paymentRequest.PaymentMethod))
+                    if (!IsCashOnDelivery(paymentRequest.PaymentMethod))
                     {
                         var simulatedStatus = await SimulatePaymentGateway();
                         payment.Status = simulatedStatus;
 
-                        if(simulatedStatus == PaymentStatus.Completed)
+                        if (simulatedStatus == PaymentStatus.Completed)
                         {
                             //Update the TransactionId on successful payment
                             payment.TransactionId = GenerateTransactionId();
@@ -108,13 +107,13 @@ namespace ECommerceApp.Services
                     // Send Order Confirmation Email if Order Status is Processing
                     // It means the user is either selected COD ofthe Payment is successfull
 
-                    if(order.OrderStatus == OrderStatus.Processing)
+                    if (order.OrderStatus == OrderStatus.Processing)
                     {
                         await SendOrderConfirmationEmailAsync(payment.OrderId);
                     }
 
                     //Manual mapping to Payment
-                    var paymentResponse =  new PaymentResponseDTO
+                    var paymentResponse = new PaymentResponseDTO
                     {
                         PaymentId = payment.Id,
                         OrderId = payment.OrderId,
@@ -127,9 +126,17 @@ namespace ECommerceApp.Services
 
                     return new ApiResponse<PaymentResponseDTO>(200, paymentResponse);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    await transaction.RollbackAsync();
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex);
+
+                    //Check if the connection is still open before rollback
+                    if (_context.Database.GetDbConnection().State == System.Data.ConnectionState.Open)
+                    {
+                        await transaction.RollbackAsync();
+                    }
+
                     return new ApiResponse<PaymentResponseDTO>(500, "An unexpected error occurred while processing the payment.");
                 }
             }
@@ -275,7 +282,6 @@ namespace ECommerceApp.Services
         }
 
 
-
         #region Helper Methods
 
         //Simulate a payment gateway response using Random.Shared for performance
@@ -302,7 +308,7 @@ namespace ECommerceApp.Services
 
         private bool IsCashOnDelivery(string paymentMethod)
         {
-            return paymentMethod.Equals("CashOnDelivery", StringComparison.OrdinalIgnoreCase) || 
+            return paymentMethod.Equals("CashOnDelivery", StringComparison.OrdinalIgnoreCase) ||
                    paymentMethod.Equals("COD", StringComparison.OrdinalIgnoreCase);
         }
 
@@ -321,7 +327,7 @@ namespace ECommerceApp.Services
                 .ThenInclude(oi => oi.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
-            if(order == null)
+            if (order == null)
             {
                 // Optionally log that the order was not found
             }

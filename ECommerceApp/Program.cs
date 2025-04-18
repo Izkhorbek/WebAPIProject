@@ -27,13 +27,13 @@ namespace ECommerceApp
             builder.Services.AddDbContext<ECommerceAppDbContext>(options =>
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-                if(string.IsNullOrEmpty( connectionString))
+                if (string.IsNullOrEmpty(connectionString))
                 {
-                   throw new InvalidOperationException("Connection string is missing");
+                    throw new InvalidOperationException("Connection string is missing");
                 }
-              
+
                 options.UseMySQL(connectionString);
-            },ServiceLifetime.Scoped);
+            }, ServiceLifetime.Scoped);
 
             //Registering the services
             builder.Services.AddScoped<CustomerService>();
@@ -53,11 +53,14 @@ namespace ECommerceApp
             //Register the OrderServie
             builder.Services.AddScoped<IOrderService, OrderService>();
 
+            //Register EmailService
+            builder.Services.AddScoped<EmailService>();
+
             //Register PaymentService
             builder.Services.AddScoped<PaymentService>();
 
-            //Register EmailService
-            builder.Services.AddScoped<EmailService>();
+            //Register Background service
+            builder.Services.AddHostedService<PendingPaymentService>();
 
             var app = builder.Build();
 
